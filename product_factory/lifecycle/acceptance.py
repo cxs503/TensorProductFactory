@@ -29,6 +29,12 @@ def accept_submitted_work_orders(
     if any(order.status is not WorkOrderStatus.SUBMITTED for order in orders):
         raise ValueError("every work order must be SUBMITTED before product acceptance")
 
+    submitted_refs = {ref for order in orders for ref in order.output_refs}
+    manifest_refs = {asset.uri for asset in manifest.assets}
+    missing_assets = sorted(submitted_refs - manifest_refs)
+    if missing_assets:
+        raise ValueError(f"product acceptance blocked: submitted outputs missing from manifest: {missing_assets}")
+
     blockers = validate_release_candidate(manifest, qa_report)
     if blockers:
         raise ValueError(f"product acceptance blocked: {list(blockers)}")
