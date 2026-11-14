@@ -89,3 +89,24 @@ def test_qa_report_cannot_claim_pass_with_nonpassing_evidence():
             evidence=(QAEvidence("content.accuracy", "needs_rework", ()),),
             reviewed_at=datetime.now(timezone.utc),
         )
+
+
+def test_evaluator_records_versioned_profile_provenance():
+    from product_factory.domain.qa_profile import QARuleProfile
+
+    profile = QARuleProfile(
+        profile_id="digital-product", version="2.1.0", product_mode="standard",
+        required_rule_ids=("content.accuracy", "delivery.complete"),
+    )
+    report = evaluate_qa_profile(
+        report_id="qa-profiled", production_order_id="po-1", product_version="1.0.0",
+        reviewer_id="independent-reviewer", producer_ids=("agent-producer",),
+        profile=profile,
+        evidence_by_rule={
+            "content.accuracy": QAEvidence("content.accuracy", "pass", ("bench://1",)),
+            "delivery.complete": QAEvidence("delivery.complete", "pass", ("test://1",)),
+        },
+        manifest=_manifest(),
+    )
+    assert report.qa_profile_id == "digital-product"
+    assert report.qa_profile_version == "2.1.0"
