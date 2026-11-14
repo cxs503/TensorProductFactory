@@ -76,3 +76,16 @@ def test_producer_cannot_review_own_product():
             evidence_by_rule={"content.accuracy": QAEvidence("content.accuracy", "pass", ("evidence://1",))},
             manifest=_manifest(),
         )
+
+
+def test_qa_report_cannot_claim_pass_with_nonpassing_evidence():
+    from datetime import datetime, timezone
+    from product_factory.domain.qa import QAReport
+
+    with pytest.raises(ValueError, match="only passing evidence"):
+        QAReport(
+            report_id="qa-invalid", production_order_id="po-1", product_version="1.0.0",
+            reviewer_id="reviewer", verdict=QAVerdict.PASS,
+            evidence=(QAEvidence("content.accuracy", "needs_rework", ()),),
+            reviewed_at=datetime.now(timezone.utc),
+        )
