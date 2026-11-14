@@ -15,6 +15,7 @@ def accept_submitted_work_orders(
     *,
     manifest: ProductManifest,
     qa_report: QAReport,
+    acceptance_profile_id: str,
 ) -> tuple[WorkOrder, ...]:
     """Accept a production order's submitted tasks only after product QA passes."""
     orders = tuple(work_orders)
@@ -26,6 +27,10 @@ def accept_submitted_work_orders(
     production_order_id = next(iter(production_ids))
     if qa_report.production_order_id != production_order_id:
         raise ValueError("QA report belongs to a different production order")
+    if not qa_report.qa_profile_id or not qa_report.qa_profile_version:
+        raise ValueError("product acceptance requires a versioned QA profile")
+    if qa_report.qa_profile_id != acceptance_profile_id:
+        raise ValueError("QA report profile does not match the ProductSpec acceptance profile")
     if any(order.status is not WorkOrderStatus.SUBMITTED for order in orders):
         raise ValueError("every work order must be SUBMITTED before product acceptance")
 
