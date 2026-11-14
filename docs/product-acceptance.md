@@ -34,7 +34,7 @@ Passing evidence must cite at least one evidence reference. The reviewer must no
 
 ## 3. Product acceptance
 
-`accept_submitted_work_orders` is the only lifecycle helper that moves submitted work orders to `ACCEPTED`. It checks:
+`accept_submitted_work_orders` is the only lifecycle helper that moves submitted work orders to `ACCEPTED`. The caller must pass the ProductSpec `acceptance_profile` as `acceptance_profile_id`; the QA report must record the same profile ID and a version. It checks:
 
 - all work orders belong to the same ProductionOrder and are SUBMITTED
 - QA report belongs to that ProductionOrder
