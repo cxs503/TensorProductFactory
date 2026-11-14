@@ -29,8 +29,8 @@ def build_product_manifest(
     """Aggregate accepted WorkOrder outputs; reject missing or ambiguous metadata."""
     outputs: list[str] = []
     for order in work_orders:
-        if order.status is not WorkOrderStatus.ACCEPTED:
-            raise ValueError(f"work order {order.work_order_id} is not independently accepted")
+        if order.status not in {WorkOrderStatus.SUBMITTED, WorkOrderStatus.ACCEPTED}:
+            raise ValueError(f"work order {order.work_order_id} has not submitted its outputs")
         outputs.extend(order.output_refs)
 
     unique_outputs = tuple(dict.fromkeys(outputs))
@@ -47,6 +47,9 @@ def build_product_manifest(
         missing_fields = sorted(_REQUIRED_METADATA - set(metadata))
         if missing_fields:
             raise ValueError(f"asset {uri} is missing metadata fields: {missing_fields}")
+        required_value = metadata.get("required", True)
+        if not isinstance(required_value, bool):
+            raise ValueError(f"asset {uri} required flag must be a boolean")
         assets.append(
             AssetEntry(
                 asset_id=str(metadata["asset_id"]),
@@ -56,7 +59,7 @@ def build_product_manifest(
                 sha256=str(metadata["sha256"]),
                 source_ref=str(metadata["source_ref"]),
                 rights_status=RightsStatus(str(metadata["rights_status"])),
-                required=bool(metadata.get("required", True)),
+                required=required_value,
             )
         )
     return ProductManifest(
