@@ -52,7 +52,7 @@ def test_manifest_rejects_unaccepted_work_order():
         worker_role="implementer",
         acceptance_criteria=("Asset exists",),
     )
-    with pytest.raises(ValueError, match="not independently accepted"):
+    with pytest.raises(ValueError, match="has not submitted its outputs"):
         build_product_manifest(
             manifest_id="m", product_id="p", product_version="1",
             work_orders=[order], asset_metadata_by_uri={},
