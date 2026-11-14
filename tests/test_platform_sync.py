@@ -47,3 +47,11 @@ def test_sync_collects_output_refs():
         {"id": 21, "status": "succeeded", "result": {"output_refs": ["data://a", "data://a"]}},
     )
     assert updated.output_refs == ("data://a",)
+
+
+def test_sync_rejects_malformed_output_refs_instead_of_silently_dropping_them():
+    with pytest.raises(ValueError, match="output_refs must contain"):
+        sync_work_order(
+            _work_order(),
+            {"id": 21, "status": "succeeded", "result": {"output_refs": ["", 7]}},
+        )
