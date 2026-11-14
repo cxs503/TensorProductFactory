@@ -38,7 +38,7 @@ def test_sync_rejects_wrong_mission_id():
     work = _work_order()
     linked = sync_work_order(work, {"id": 21, "status": "running"})
     with pytest.raises(ValueError, match="does not match"):
-        sync_work_order(linked, {"id": 22, "status": "completed"})
+        sync_work_order(linked, {"id": 22, "status": "succeeded"})
 
 
 def test_sync_collects_output_refs():
