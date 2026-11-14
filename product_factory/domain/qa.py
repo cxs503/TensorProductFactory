@@ -35,12 +35,16 @@ class QAReport:
     evidence: tuple[QAEvidence, ...]
     reviewed_at: datetime
     producer_ids: tuple[str, ...] = ()
+    qa_profile_id: str = ""
+    qa_profile_version: str = ""
 
     def __post_init__(self) -> None:
         if not all((self.report_id, self.production_order_id, self.product_version, self.reviewer_id)):
             raise ValueError("QA report identifiers and reviewer are required")
         if self.reviewer_id in self.producer_ids:
             raise ValueError("producer cannot approve their own product")
+        if bool(self.qa_profile_id) != bool(self.qa_profile_version):
+            raise ValueError("QA profile ID and version must be supplied together")
         if not self.evidence:
             raise ValueError("QA report must contain evidence")
         rule_ids = [item.rule_id for item in self.evidence]
