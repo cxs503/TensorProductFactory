@@ -25,7 +25,7 @@ A completed Platform mission, registered Data asset, reviewed Knowledge evidence
 ## Current implementation
 
 - Typed product, production-order, work-order, QA, asset-manifest, and release records.
-- Explicit work-order transition guard.
+- Explicit work-order transition guard and dependency DAG validation/topological scheduling.
 - Product release-candidate checks for QA verdict, version consistency, and required asset rights.
 - Pure TensorPlatform MissionCreate payload mapping; this is not a live API client and does not bypass Platform repository allowlisting.
 - JSON Schema contracts and pytest tests.
