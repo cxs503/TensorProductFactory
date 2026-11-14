@@ -12,8 +12,8 @@ Construct `TensorPlatformClient` with:
 ## Dispatch protocol
 
 1. ProductFactory first verifies that every dependency is independently accepted.
-2. Build the MissionCreate body with `mission_payload`, passing a Platform Factory Profile project ID (not a GitHub slug) and a Platform worker role.
-3. Call `TensorPlatformClient.create_mission`. The WorkOrder ID is sent as `task_key`; Platform enforces idempotency for the same authenticated organization and rejects reuse with a different task definition (409).
+2. Use `dispatch_work_order` to enforce READY state and independently accepted dependencies before any network call.
+3. The helper builds the MissionCreate body and calls `TensorPlatformClient.create_mission`. The WorkOrder ID is sent as `task_key`; Platform enforces idempotency for the same authenticated organization and rejects reuse with a different task definition (409).
 4. Persist the returned mission ID by applying `attach_mission` and saving the updated WorkOrder. `SQLiteWorkOrderStore` provides a file-backed MVP store with optimistic revision checks; it is a single-node adapter, not a shared production database.
 5. Poll `get_mission` to refresh the execution snapshot. `sync_work_order` maps Platform states to ProductFactory execution states and collects `result.output_refs`.
 6. Run ProductFactory's own evidence-backed QA. Platform `awaiting_acceptance` / `completed` is only a submitted execution result, never ProductFactory `ACCEPTED`.
