@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 
 from product_factory.domain.manifest import ProductManifest
 from product_factory.domain.qa import QAEvidence, QAReport, QAVerdict
+from product_factory.domain.qa_profile import QARuleProfile
 
 
 _ALLOWED_OUTCOMES = {"pass", "fail", "needs_rework"}
@@ -18,7 +19,8 @@ def evaluate_qa_profile(
     product_version: str,
     reviewer_id: str,
     producer_ids: Iterable[str],
-    required_rule_ids: Iterable[str],
+    required_rule_ids: Iterable[str] | None = None,
+    profile: QARuleProfile | None = None,
     evidence_by_rule: Mapping[str, QAEvidence],
     manifest: ProductManifest,
     reviewed_at: datetime | None = None,
@@ -28,7 +30,11 @@ def evaluate_qa_profile(
     Required rules absent from the evidence map become explicit needs_rework
     findings. Extra rule IDs are rejected to catch profile/evidence drift.
     """
-    required = tuple(dict.fromkeys(required_rule_ids))
+    if profile is not None:
+        if required_rule_ids is not None and tuple(required_rule_ids) != profile.required_rule_ids:
+            raise ValueError("required_rule_ids conflict with the supplied QA profile")
+        required_rule_ids = profile.required_rule_ids
+    required = tuple(dict.fromkeys(required_rule_ids or ()))
     if not required:
         raise ValueError("QA profile must define at least one required rule")
     unexpected = sorted(set(evidence_by_rule) - set(required))
@@ -88,4 +94,6 @@ def evaluate_qa_profile(
         evidence=tuple(findings),
         reviewed_at=reviewed_at or datetime.now(timezone.utc),
         producer_ids=tuple(producer_ids),
+        qa_profile_id=profile.profile_id if profile else "",
+        qa_profile_version=profile.version if profile else "",
     )
