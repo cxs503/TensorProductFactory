@@ -31,10 +31,12 @@ A completed Platform mission, registered Data asset, reviewed Knowledge evidence
 - Rule-profile-driven independent QA with explicit missing-evidence findings, plus a product acceptance gate that only accepts submitted work after a passing QA report.
 - TensorPlatform MissionCreate payload mapping plus an authenticated HTTP client, stable-task-key retry behavior, mission polling, and execution-state synchronization.
 - Dependency-gated dispatch orchestration joining the WorkOrder store, idempotent Platform client, and mission-state synchronization.
+- SQLite ProductSpec/ProductionOrder persistence with exact product-version references and optimistic order revisions.
+- A one-tick production-order runner that polls missions, dispatches newly unblocked DAG tasks, and keeps Platform completion separate from independent product acceptance.
 - File-backed SQLite WorkOrder persistence with optimistic concurrency control. Deployment credentials and Factory Profile project registration remain operator-supplied.
 - JSON Schema contracts, pytest tests for domain rules and Platform adapter/client behavior, and a GitHub Actions CI workflow.
 
-See [TensorPlatform integration](docs/platform-integration.md) for API configuration and dispatch/polling semantics, and [Product acceptance](docs/product-acceptance.md) for asset provenance and independent QA rules.
+See [TensorPlatform integration](docs/platform-integration.md) for API configuration and dispatch/polling semantics, [Product acceptance](docs/product-acceptance.md) for asset provenance and independent QA rules, and [Production-order execution](docs/production-order-runner.md) for the one-tick DAG runner.
 
 ## Development
 
