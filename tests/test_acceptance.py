@@ -66,3 +66,13 @@ def test_qa_report_must_match_production_order():
     )
     with pytest.raises(ValueError, match="different production order"):
         accept_submitted_work_orders([_order()], manifest=_manifest(), qa_report=qa)
+
+
+def test_acceptance_requires_manifest_to_cover_all_submitted_outputs():
+    empty_manifest = ProductManifest(
+        manifest_id="m-empty", product_id="p-1", product_version="1.0.0", assets=()
+    )
+    with pytest.raises(ValueError, match="missing from manifest"):
+        accept_submitted_work_orders(
+            [_order()], manifest=empty_manifest, qa_report=_qa()
+        )
