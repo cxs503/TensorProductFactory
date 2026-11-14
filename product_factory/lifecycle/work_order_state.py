@@ -1,4 +1,3 @@
-from . import _sentinel  # noqa: F401
 from product_factory.domain.work_order import WorkOrderStatus
 
 
