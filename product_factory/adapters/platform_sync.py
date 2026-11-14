@@ -12,12 +12,14 @@ _PLATFORM_TO_WORK_ORDER = {
     "claimed": WorkOrderStatus.RUNNING,
     "running": WorkOrderStatus.RUNNING,
     "awaiting_acceptance": WorkOrderStatus.SUBMITTED,
-    "completed": WorkOrderStatus.SUBMITTED,
-    "accepted": WorkOrderStatus.SUBMITTED,
-    "rejected": WorkOrderStatus.REJECTED,
+    "succeeded": WorkOrderStatus.SUBMITTED,
+    "awaiting_pr_merge": WorkOrderStatus.BLOCKED,
     "failed": WorkOrderStatus.REJECTED,
+    "revoked": WorkOrderStatus.CANCELLED,
     "stopped": WorkOrderStatus.CANCELLED,
-    "cancelled": WorkOrderStatus.CANCELLED,
+    "suspended": WorkOrderStatus.BLOCKED,
+    "reopened": WorkOrderStatus.RUNNING,
+    "orphan": WorkOrderStatus.REJECTED,
 }
 
 
