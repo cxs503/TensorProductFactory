@@ -7,8 +7,9 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterable
+from typing import Iterator
 
 from product_factory.domain.work_order import WorkOrder, WorkOrderStatus
 
@@ -20,9 +21,10 @@ class ConcurrentWorkOrderUpdate(RuntimeError):
 class SQLiteWorkOrderStore:
     def __init__(self, database_path: str | Path) -> None:
         self.database_path = str(database_path)
-        if self.database_path != ":memory:":
-            Path(self.database_path).expanduser().resolve().parent.mkdir(parents=True, exist_ok=True)
-        with self._connect() as db:
+        if self.database_path == ":memory:":
+            raise ValueError("SQLiteWorkOrderStore requires a file-backed database path")
+        Path(self.database_path).expanduser().resolve().parent.mkdir(parents=True, exist_ok=True)
+        with self._connection() as db:
             db.execute("""
                 CREATE TABLE IF NOT EXISTS product_factory_work_orders (
                     work_order_id TEXT PRIMARY KEY,
@@ -37,10 +39,15 @@ class SQLiteWorkOrderStore:
                 ON product_factory_work_orders(production_order_id, work_order_id)
             """)
 
-    def _connect(self) -> sqlite3.Connection:
+    @contextmanager
+    def _connection(self) -> Iterator[sqlite3.Connection]:
         db = sqlite3.connect(self.database_path, timeout=10.0)
         db.row_factory = sqlite3.Row
-        return db
+        try:
+            with db:
+                yield db
+        finally:
+            db.close()
 
     @staticmethod
     def _encode(order: WorkOrder) -> str:
@@ -70,8 +77,8 @@ class SQLiteWorkOrderStore:
         return WorkOrder(**value)
 
     def create(self, order: WorkOrder) -> int:
-        with self._connect() as db:
-            cursor = db.execute(
+        with self._connection() as db:
+            db.execute(
                 """INSERT INTO product_factory_work_orders
                    (work_order_id, production_order_id, payload_json, revision)
                    VALUES (?, ?, ?, 1)""",
