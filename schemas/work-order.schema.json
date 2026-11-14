@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tensorproductfactory.dev/schemas/work-order.schema.json",
+  "title": "WorkOrder",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["work_order_id", "production_order_id", "objective", "worker_role", "acceptance_criteria", "budget", "status"],
+  "properties": {
+    "work_order_id": {"type": "string", "minLength": 1},
+    "production_order_id": {"type": "string", "minLength": 1},
+    "objective": {"type": "string", "minLength": 1},
+    "worker_role": {"type": "string", "minLength": 1},
+    "acceptance_criteria": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "dependencies": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "budget": {"type": "integer", "minimum": 0},
+    "repository": {"type": ["string", "null"]},
+    "platform_mission_id": {"type": ["string", "null"]},
+    "output_refs": {"type": "array", "items": {"type": "string"}},
+    "status": {"enum": ["draft", "ready", "dispatched", "running", "submitted", "accepted", "rejected", "blocked", "cancelled"]},
+    "metadata": {"type": "object", "additionalProperties": {"type": "string"}}
+  }
+}
