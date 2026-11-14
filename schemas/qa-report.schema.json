@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tensorproductfactory.dev/schemas/qa-report.schema.json",
+  "title": "QAReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["report_id", "production_order_id", "product_version", "reviewer_id", "verdict", "evidence", "reviewed_at", "producer_ids"],
+  "properties": {
+    "report_id": {"type": "string", "minLength": 1},
+    "production_order_id": {"type": "string", "minLength": 1},
+    "product_version": {"type": "string", "minLength": 1},
+    "reviewer_id": {"type": "string", "minLength": 1},
+    "verdict": {"enum": ["pass", "fail", "needs_rework"]},
+    "reviewed_at": {"type": "string", "format": "date-time"},
+    "producer_ids": {"type": "array", "items": {"type": "string"}},
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["rule_id", "outcome", "evidence_refs"],
+        "properties": {
+          "rule_id": {"type": "string", "minLength": 1},
+          "outcome": {"type": "string", "minLength": 1},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}},
+          "note": {"type": "string"}
+        }
+      }
+    }
+  }
+}
