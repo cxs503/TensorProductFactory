@@ -131,21 +131,20 @@ def test_runner_moves_order_to_qa_only_after_every_task_is_accepted(tmp_path):
 
 
 def test_runner_rejects_missing_product_spec(tmp_path):
-    production = SQLiteProductionStore(tmp_path / "production.sqlite")
-    order = _order()
-    # Bypass the store's FK only to model legacy/imported inconsistent data.
-    with production._connection() as db:
-        db.execute(
-            """INSERT INTO product_factory_production_orders
-               (production_order_id, product_id, product_version, payload_json, revision)
-               VALUES (?, ?, ?, ?, 1)""",
-            (order.production_order_id, order.product_id, order.product_version,
-             production._encode_order(order)),
-        )
+    class MissingSpecStore:
+        def get_production_order(self, production_order_id):
+            return _order(), 1
+
+        def get_product_spec(self, product_id, version):
+            return None
+
+        def update_production_order(self, order, *, expected_revision):
+            raise AssertionError("must not update an order with a missing ProductSpec")
+
     tasks = SQLiteWorkOrderStore(tmp_path / "work.sqlite")
     try:
         advance_production_order(
-            "po-001", production_store=production, work_order_store=tasks,
+            "po-001", production_store=MissingSpecStore(), work_order_store=tasks,
             mission_client=FakeMissionClient(), platform_project_id="factory-project",
             platform_worker_role="applications",
         )
