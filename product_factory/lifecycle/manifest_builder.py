@@ -1,4 +1,4 @@
-"""Build a product manifest from accepted task outputs and verified asset metadata.
+"""Build a product manifest from submitted task outputs and verified asset metadata.
 
 Mission output references are pointers, not proof of ownership, integrity, or
 license. Every reference must be accompanied by explicit metadata supplied by
@@ -26,7 +26,7 @@ def build_product_manifest(
     work_orders: Iterable[WorkOrder],
     asset_metadata_by_uri: Mapping[str, Mapping[str, Any]],
 ) -> ProductManifest:
-    """Aggregate accepted WorkOrder outputs; reject missing or ambiguous metadata."""
+    """Aggregate submitted WorkOrder outputs; reject missing or ambiguous metadata."""
     outputs: list[str] = []
     for order in work_orders:
         if order.status not in {WorkOrderStatus.SUBMITTED, WorkOrderStatus.ACCEPTED}:
@@ -35,7 +35,7 @@ def build_product_manifest(
 
     unique_outputs = tuple(dict.fromkeys(outputs))
     if not unique_outputs:
-        raise ValueError("no accepted WorkOrder output references were supplied")
+        raise ValueError("no submitted WorkOrder output references were supplied")
 
     missing_refs = sorted(set(unique_outputs) - set(asset_metadata_by_uri))
     if missing_refs:
