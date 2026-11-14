@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tensorproductfactory.dev/schemas/product-manifest.schema.json",
+  "title": "ProductManifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["manifest_id", "product_id", "product_version", "assets"],
+  "properties": {
+    "manifest_id": {"type": "string", "minLength": 1},
+    "product_id": {"type": "string", "minLength": 1},
+    "product_version": {"type": "string", "minLength": 1},
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["asset_id", "version", "role", "uri", "sha256", "source_ref", "rights_status"],
+        "properties": {
+          "asset_id": {"type": "string", "minLength": 1},
+          "version": {"type": "string", "minLength": 1},
+          "role": {"type": "string", "minLength": 1},
+          "uri": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+          "source_ref": {"type": "string", "minLength": 1},
+          "rights_status": {"enum": ["unknown", "pending", "cleared", "restricted", "expired"]},
+          "required": {"type": "boolean", "default": true}
+        }
+      }
+    }
+  }
+}
