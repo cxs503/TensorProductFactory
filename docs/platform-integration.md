@@ -14,7 +14,7 @@ Construct `TensorPlatformClient` with:
 1. ProductFactory first verifies that every dependency is independently accepted.
 2. Build the MissionCreate body with `mission_payload`, passing a Platform Factory Profile project ID (not a GitHub slug) and a Platform worker role.
 3. Call `TensorPlatformClient.create_mission`. The WorkOrder ID is sent as `task_key`; Platform enforces idempotency for the same authenticated organization and rejects reuse with a different task definition (409).
-4. Persist the returned mission ID by applying `attach_mission` and saving the updated WorkOrder in the caller's durable store. This repository currently defines the integration boundary; it does not yet provide a production database.
+4. Persist the returned mission ID by applying `attach_mission` and saving the updated WorkOrder. `SQLiteWorkOrderStore` provides a file-backed MVP store with optimistic revision checks; it is a single-node adapter, not a shared production database.
 5. Poll `get_mission` to refresh the execution snapshot. `sync_work_order` maps Platform states to ProductFactory execution states and collects `result.output_refs`.
 6. Run ProductFactory's own evidence-backed QA. Platform `awaiting_acceptance` / `completed` is only a submitted execution result, never ProductFactory `ACCEPTED`.
 
@@ -27,3 +27,10 @@ Construct `TensorPlatformClient` with:
 - ProductFactory supports multi-parent DAGs. Platform's `parent_mission_id` is a single-parent field; do not use it as a replacement for ProductFactory dependency enforcement.
 - Mission creation retries reuse the same `task_key`; do not change the task definition while retrying an uncertain request.
 - This client does not claim that a mission has been claimed, executed, accepted, or delivered. Only subsequent API reads can establish those facts.
+
+
+## Durable work-order state
+
+`SQLiteWorkOrderStore` persists work orders between dispatch and polling. The intended sequence is: create the work order in the store; create the Platform mission; attach the returned mission ID; update the stored row using its current revision; later reload the row, poll `get_mission`, call `sync_work_order`, and update again using the newly read revision.
+
+A revision mismatch raises `ConcurrentWorkOrderUpdate`; callers must reload and reconcile rather than overwrite newer state. Store the database on persistent storage and back it up. SQLite is intended for a single-node MVP; multi-worker deployments need a shared transactional database adapter.
