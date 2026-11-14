@@ -66,3 +66,17 @@ def test_manifest_requires_hash_and_provenance_metadata():
             work_orders=[_accepted_order()],
             asset_metadata_by_uri={"data://asset/a": {"asset_id": "asset-a"}},
         )
+
+
+def test_manifest_can_be_built_before_final_product_acceptance():
+    order = WorkOrder(
+        work_order_id="wo-submitted", production_order_id="po-1",
+        objective="Submit product asset", worker_role="implementer",
+        acceptance_criteria=("Asset is ready for review",),
+        output_refs=("data://asset/a",), status=WorkOrderStatus.SUBMITTED,
+    )
+    manifest = build_product_manifest(
+        manifest_id="m", product_id="p", product_version="1",
+        work_orders=[order], asset_metadata_by_uri={"data://asset/a": _metadata()},
+    )
+    assert manifest.assets[0].uri == "data://asset/a"
