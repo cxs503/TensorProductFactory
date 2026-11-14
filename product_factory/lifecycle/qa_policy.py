@@ -63,7 +63,7 @@ def evaluate_qa_profile(
     if product_version != manifest.product_version:
         findings.append(
             QAEvidence(
-                rule_id="manifest.version_match",
+                rule_id="system.manifest.version_match",
                 outcome="fail",
                 evidence_refs=(manifest.manifest_id,),
                 note="QA product version does not match the asset manifest",
@@ -72,7 +72,7 @@ def evaluate_qa_profile(
     for blocker in manifest.release_blockers():
         findings.append(
             QAEvidence(
-                rule_id=f"manifest.release_blocker.{len(findings) + 1}",
+                rule_id=f"system.manifest.release_blocker.{len(findings) + 1}",
                 outcome="fail",
                 evidence_refs=(manifest.manifest_id,),
                 note=blocker,
