@@ -8,9 +8,9 @@ It orchestrates existing Tensor infrastructure rather than reimplementing agent 
 
 - Define market opportunities and versioned product specifications.
 - Create production orders and dependency-aware work orders.
-- Aggregate versioned assets into a product manifest.
-- Require independent, evidence-backed QA before release.
-- Track release packages and real commercial outcomes.
+- Aggregate versioned assets into a product manifest with source, checksum, and rights state.
+- Require independent, evidence-backed QA and cleared rights for required assets before release.
+- Track immutable release package references and real commercial outcomes.
 
 ## System boundaries
 
@@ -22,9 +22,13 @@ It orchestrates existing Tensor infrastructure rather than reimplementing agent 
 
 A completed Platform mission, registered Data asset, reviewed Knowledge evidence, or passing Bench run is not by itself approval to sell a product.
 
-## Initial implementation
+## Current implementation
 
-The first milestone defines typed domain objects, lifecycle transition rules, JSON Schemas, and tests. Platform/Data/Knowledge/Bench integrations will be adapters with explicit contracts; unavailable remote APIs will not be assumed.
+- Typed product, production-order, work-order, QA, asset-manifest, and release records.
+- Explicit work-order transition guard.
+- Product release-candidate checks for QA verdict, version consistency, and required asset rights.
+- Pure TensorPlatform MissionCreate payload mapping; this is not a live API client and does not bypass Platform repository allowlisting.
+- JSON Schema contracts and pytest tests.
 
 ## Development
 
@@ -35,4 +39,4 @@ pytest
 
 ## Status
 
-Early implementation. No claim of production readiness or commercial validation is made.
+Early implementation. Tests are authored but must be executed in CI or a development environment before merge. No claim of production readiness, live integration, or commercial validation is made.
