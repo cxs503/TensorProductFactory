@@ -27,8 +27,14 @@ A completed Platform mission, registered Data asset, reviewed Knowledge evidence
 - Typed product, production-order, work-order, QA, asset-manifest, and release records.
 - Explicit work-order transition guard and dependency DAG validation/topological scheduling.
 - Product release-candidate checks for QA verdict, version consistency, and required asset rights.
-- Pure TensorPlatform MissionCreate payload mapping; this is not a live API client and does not bypass Platform repository allowlisting.
-- JSON Schema contracts and pytest tests.
+- Manifest assembly from submitted task outputs, requiring explicit hashes, provenance, and rights metadata.
+- Rule-profile-driven independent QA with explicit missing-evidence findings, plus a product acceptance gate that only accepts submitted work after a passing QA report.
+- TensorPlatform MissionCreate payload mapping plus an authenticated HTTP client, stable-task-key retry behavior, mission polling, and execution-state synchronization.
+- Dependency-gated dispatch orchestration joining the WorkOrder store, idempotent Platform client, and mission-state synchronization.
+- File-backed SQLite WorkOrder persistence with optimistic concurrency control. Deployment credentials and Factory Profile project registration remain operator-supplied.
+- JSON Schema contracts, pytest tests for domain rules and Platform adapter/client behavior, and a GitHub Actions CI workflow.
+
+See [TensorPlatform integration](docs/platform-integration.md) for API configuration and dispatch/polling semantics, and [Product acceptance](docs/product-acceptance.md) for asset provenance and independent QA rules.
 
 ## Development
 

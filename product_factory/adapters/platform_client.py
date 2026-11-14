@@ -8,17 +8,17 @@ from __future__ import annotations
 
 import json
 import time
-from dataclasses import dataclass
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 
-@dataclass(frozen=True)
 class PlatformAPIError(RuntimeError):
-    status_code: int | None
-    message: str
-    response_body: Any = None
+    def __init__(self, status_code: int | None, message: str, response_body: Any = None):
+        self.status_code = status_code
+        self.message = message
+        self.response_body = response_body
+        super().__init__(self.__str__())
 
     def __str__(self) -> str:
         return f"TensorPlatform API error ({self.status_code}): {self.message}"
