@@ -87,7 +87,7 @@ class SQLiteWorkOrderStore:
             return 1
 
     def get(self, work_order_id: str) -> tuple[WorkOrder, int] | None:
-        with self._connect() as db:
+        with self._connection() as db:
             row = db.execute(
                 """SELECT payload_json, revision FROM product_factory_work_orders
                    WHERE work_order_id = ?""",
@@ -100,7 +100,7 @@ class SQLiteWorkOrderStore:
     def update(self, order: WorkOrder, *, expected_revision: int) -> int:
         if expected_revision < 1:
             raise ValueError("expected_revision must be positive")
-        with self._connect() as db:
+        with self._connection() as db:
             cursor = db.execute(
                 """UPDATE product_factory_work_orders
                    SET production_order_id = ?, payload_json = ?,
@@ -126,7 +126,7 @@ class SQLiteWorkOrderStore:
             return expected_revision + 1
 
     def list_for_production_order(self, production_order_id: str) -> tuple[WorkOrder, ...]:
-        with self._connect() as db:
+        with self._connection() as db:
             rows = db.execute(
                 """SELECT payload_json FROM product_factory_work_orders
                    WHERE production_order_id = ? ORDER BY work_order_id""",
