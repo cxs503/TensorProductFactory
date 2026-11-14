@@ -20,8 +20,12 @@ def _work_order():
         ("queued", WorkOrderStatus.DISPATCHED),
         ("running", WorkOrderStatus.RUNNING),
         ("awaiting_acceptance", WorkOrderStatus.SUBMITTED),
-        ("completed", WorkOrderStatus.SUBMITTED),
-        ("rejected", WorkOrderStatus.REJECTED),
+        ("succeeded", WorkOrderStatus.SUBMITTED),
+        ("awaiting_pr_merge", WorkOrderStatus.BLOCKED),
+        ("suspended", WorkOrderStatus.BLOCKED),
+        ("reopened", WorkOrderStatus.RUNNING),
+        ("orphan", WorkOrderStatus.REJECTED),
+        ("failed", WorkOrderStatus.REJECTED),
     ],
 )
 def test_platform_status_mapping_never_auto_accepts(platform_status, expected):
@@ -40,6 +44,6 @@ def test_sync_rejects_wrong_mission_id():
 def test_sync_collects_output_refs():
     updated = sync_work_order(
         _work_order(),
-        {"id": 21, "status": "completed", "result": {"output_refs": ["data://a", "data://a"]}},
+        {"id": 21, "status": "succeeded", "result": {"output_refs": ["data://a", "data://a"]}},
     )
     assert updated.output_refs == ("data://a",)
