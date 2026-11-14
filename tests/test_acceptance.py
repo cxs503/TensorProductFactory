@@ -54,7 +54,7 @@ def test_failed_qa_cannot_accept_work_order():
 def test_draft_work_order_cannot_be_accepted():
     with pytest.raises(ValueError, match="SUBMITTED"):
         accept_submitted_work_orders(
-            [_order(WorkOrderStatus.READY)], manifest=_manifest(), qa_report=_qa()
+            [_order(WorkOrderStatus.READY)], manifest=_manifest(), qa_report=_qa(), acceptance_profile_id="standard-digital-product"
         )
 
 
@@ -76,4 +76,12 @@ def test_acceptance_requires_manifest_to_cover_all_submitted_outputs():
     with pytest.raises(ValueError, match="missing from manifest"):
         accept_submitted_work_orders(
             [_order()], manifest=empty_manifest, qa_report=_qa(), acceptance_profile_id="standard-digital-product"
+        )
+
+
+def test_acceptance_rejects_wrong_product_qa_profile():
+    with pytest.raises(ValueError, match="does not match the ProductSpec"):
+        accept_submitted_work_orders(
+            [_order()], manifest=_manifest(), qa_report=_qa(),
+            acceptance_profile_id="software-release",
         )
