@@ -12,7 +12,6 @@
     "task_type",
     "difficulty",
     "prompt",
-    "answer_key",
     "provenance",
     "review"
   ],
