@@ -1,0 +1,263 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tensor.example/schemas/english-exam-content-item.schema.json",
+  "title": "English Exam Content Item",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "item_id",
+    "exam_adapter",
+    "skill",
+    "task_type",
+    "difficulty",
+    "prompt",
+    "answer_key",
+    "provenance",
+    "review"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "item_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{2,79}$"
+    },
+    "exam_adapter": {
+      "const": "ielts-academic"
+    },
+    "skill": {
+      "enum": [
+        "listening",
+        "reading",
+        "writing",
+        "speaking"
+      ]
+    },
+    "task_type": {
+      "type": "string",
+      "minLength": 2
+    },
+    "difficulty": {
+      "enum": [
+        "A1",
+        "A2",
+        "B1",
+        "B2",
+        "C1",
+        "C2",
+        "IELTS-unknown"
+      ]
+    },
+    "prompt": {
+      "type": "object",
+      "required": [
+        "instruction",
+        "stimulus"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "instruction": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stimulus": {
+          "type": "string",
+          "minLength": 1
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "text"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "minItems": 2
+        }
+      }
+    },
+    "answer_key": {
+      "type": "object",
+      "required": [
+        "expected",
+        "explanation"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "expected": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scoring": {
+          "type": "object"
+        }
+      }
+    },
+    "rubric_ref": {
+      "type": "string"
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "origin",
+        "creator",
+        "created_at",
+        "rights_status",
+        "permitted_uses"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "origin": {
+          "enum": [
+            "original",
+            "licensed",
+            "public_domain",
+            "restricted_reference_only",
+            "unknown"
+          ]
+        },
+        "creator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "source_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "rights_status": {
+          "enum": [
+            "cleared",
+            "pending",
+            "blocked"
+          ]
+        },
+        "permitted_uses": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "internal_benchmark",
+              "commercial_distribution",
+              "model_training",
+              "display_with_attribution"
+            ]
+          }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "required": [
+        "status",
+        "reviewer_ids",
+        "ambiguity_status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "draft",
+            "reviewed",
+            "approved",
+            "rejected"
+          ]
+        },
+        "reviewer_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ambiguity_status": {
+          "enum": [
+            "unassessed",
+            "clear",
+            "unresolved"
+          ]
+        },
+        "answer_verification": {
+          "enum": [
+            "not_run",
+            "single_review",
+            "independently_verified",
+            "failed"
+          ]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "skill": {
+            "enum": [
+              "listening",
+              "reading"
+            ]
+          }
+        },
+        "required": [
+          "skill"
+        ]
+      },
+      "then": {
+        "required": [
+          "answer_key"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "skill": {
+            "enum": [
+              "writing",
+              "speaking"
+            ]
+          }
+        },
+        "required": [
+          "skill"
+        ]
+      },
+      "then": {
+        "required": [
+          "rubric_ref"
+        ]
+      }
+    }
+  ]
+}
