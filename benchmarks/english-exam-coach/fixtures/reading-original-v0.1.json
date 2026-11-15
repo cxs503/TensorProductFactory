@@ -97,7 +97,7 @@
       "task_type": "short_answer",
       "difficulty": "B2",
       "prompt": {
-        "instruction": "Answer using no more than three words.",
+        "instruction": "Answer using no more than six words.",
         "stimulus": "Urban gardens are often praised for increasing access to fresh produce. Yet their contribution to city food supplies is usually modest. Their wider value may lie elsewhere: shared growing spaces can create meeting places, teach practical skills and turn neglected plots into cared-for public areas. These benefits depend on reliable access to land and long-term support; projects that rely entirely on short-term volunteers may struggle to continue.\\n\\nQuestion: What two conditions do the wider benefits depend on?"
       },
       "answer_key": {
