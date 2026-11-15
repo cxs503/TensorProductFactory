@@ -1,0 +1,129 @@
+{
+  "pack_schema_version": "1.0.0",
+  "pack_id": "ielts-academic-reading-original-v0.1",
+  "exam_adapter": "ielts-academic",
+  "pack_version": "0.1.0",
+  "language": "en",
+  "items": [
+    {
+      "schema_version": "1.0.0",
+      "item_id": "read-urban-gardens-001",
+      "exam_adapter": "ielts-academic",
+      "skill": "reading",
+      "task_type": "multiple_choice_single",
+      "difficulty": "B2",
+      "prompt": {
+        "instruction": "Choose the best answer, A, B, C or D.",
+        "stimulus": "Urban gardens are often praised for increasing access to fresh produce. Yet their contribution to city food supplies is usually modest. Their wider value may lie elsewhere: shared growing spaces can create meeting places, teach practical skills and turn neglected plots into cared-for public areas. These benefits depend on reliable access to land and long-term support; projects that rely entirely on short-term volunteers may struggle to continue.",
+        "options": [
+          {
+            "id": "A",
+            "text": "They can replace a substantial share of commercial food supply."
+          },
+          {
+            "id": "B",
+            "text": "Their social and educational effects may exceed their food output."
+          },
+          {
+            "id": "C",
+            "text": "They succeed mainly when managed by professional farmers."
+          },
+          {
+            "id": "D",
+            "text": "They require no long-term planning once established."
+          }
+        ]
+      },
+      "answer_key": {
+        "expected": "B",
+        "explanation": "The passage explicitly contrasts modest food contribution with wider social and educational value."
+      },
+      "provenance": {
+        "origin": "original",
+        "creator": "Tensor Exam Content Team",
+        "created_at": "2026-11-15",
+        "rights_status": "cleared",
+        "permitted_uses": [
+          "internal_benchmark",
+          "commercial_distribution",
+          "model_training"
+        ]
+      },
+      "review": {
+        "status": "draft",
+        "reviewer_ids": [],
+        "ambiguity_status": "unassessed",
+        "answer_verification": "not_run"
+      }
+    },
+    {
+      "schema_version": "1.0.0",
+      "item_id": "read-urban-gardens-002",
+      "exam_adapter": "ielts-academic",
+      "skill": "reading",
+      "task_type": "true_false_not_given",
+      "difficulty": "B2",
+      "prompt": {
+        "instruction": "Decide whether the statement agrees with the information in the passage: TRUE, FALSE or NOT GIVEN.",
+        "stimulus": "Urban gardens are often praised for increasing access to fresh produce. Yet their contribution to city food supplies is usually modest. Their wider value may lie elsewhere: shared growing spaces can create meeting places, teach practical skills and turn neglected plots into cared-for public areas. These benefits depend on reliable access to land and long-term support; projects that rely entirely on short-term volunteers may struggle to continue.\\n\\nStatement: Most urban gardens are funded by municipal governments."
+      },
+      "answer_key": {
+        "expected": "NOT GIVEN",
+        "explanation": "The passage discusses land access and long-term support but does not identify who funds most urban gardens."
+      },
+      "provenance": {
+        "origin": "original",
+        "creator": "Tensor Exam Content Team",
+        "created_at": "2026-11-15",
+        "rights_status": "cleared",
+        "permitted_uses": [
+          "internal_benchmark",
+          "commercial_distribution",
+          "model_training"
+        ]
+      },
+      "review": {
+        "status": "draft",
+        "reviewer_ids": [],
+        "ambiguity_status": "unassessed",
+        "answer_verification": "not_run"
+      }
+    },
+    {
+      "schema_version": "1.0.0",
+      "item_id": "read-urban-gardens-003",
+      "exam_adapter": "ielts-academic",
+      "skill": "reading",
+      "task_type": "short_answer",
+      "difficulty": "B2",
+      "prompt": {
+        "instruction": "Answer using no more than three words.",
+        "stimulus": "Urban gardens are often praised for increasing access to fresh produce. Yet their contribution to city food supplies is usually modest. Their wider value may lie elsewhere: shared growing spaces can create meeting places, teach practical skills and turn neglected plots into cared-for public areas. These benefits depend on reliable access to land and long-term support; projects that rely entirely on short-term volunteers may struggle to continue.\\n\\nQuestion: What two conditions do the wider benefits depend on?"
+      },
+      "answer_key": {
+        "expected": [
+          "reliable access to land",
+          "long-term support"
+        ],
+        "explanation": "The final two sentences name reliable access to land and long-term support as the conditions."
+      },
+      "provenance": {
+        "origin": "original",
+        "creator": "Tensor Exam Content Team",
+        "created_at": "2026-11-15",
+        "rights_status": "cleared",
+        "permitted_uses": [
+          "internal_benchmark",
+          "commercial_distribution",
+          "model_training"
+        ]
+      },
+      "review": {
+        "status": "draft",
+        "reviewer_ids": [],
+        "ambiguity_status": "unassessed",
+        "answer_verification": "not_run"
+      }
+    }
+  ]
+}
