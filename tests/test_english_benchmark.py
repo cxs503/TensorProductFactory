@@ -1,7 +1,9 @@
 import json
+import sys
 import unittest
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parents[1] / "tools"))
 from validate_english_benchmark import validate_pack
 
 
