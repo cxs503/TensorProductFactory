@@ -1,6 +1,7 @@
 import json
 import sys
 import unittest
+from jsonschema import Draft202012Validator, FormatChecker
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parents[1] / "tools"))
@@ -16,6 +17,13 @@ class EnglishBenchmarkValidationTests(unittest.TestCase):
 
     def test_original_fixture_is_structurally_valid(self):
         self.assertEqual(validate_pack(self.pack), [])
+
+    def test_fixture_items_conform_to_published_json_schema(self):
+        schema_path = Path(__file__).parents[1] / "benchmarks/english-exam-coach/schemas/content-item.schema.json"
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        validator = Draft202012Validator(schema, format_checker=FormatChecker())
+        for item in self.pack["items"]:
+            self.assertEqual(list(validator.iter_errors(item)), [])
 
     def test_duplicate_ids_are_rejected(self):
         self.pack["items"][1]["item_id"] = self.pack["items"][0]["item_id"]
