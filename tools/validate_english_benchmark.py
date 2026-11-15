@@ -7,6 +7,8 @@ import json
 import sys
 from pathlib import Path
 
+from jsonschema import Draft202012Validator, FormatChecker
+
 RIGHTS_ORIGINS = {"original", "licensed", "public_domain", "restricted_reference_only", "unknown"}
 RIGHTS_STATES = {"cleared", "pending", "blocked"}
 REVIEW_STATES = {"draft", "reviewed", "approved", "rejected"}
@@ -27,12 +29,23 @@ def validate_pack(pack: dict, require_release: bool = False) -> list[str]:
         errors.append("items must be a non-empty array")
         return errors
 
+    schema_path = Path(__file__).parents[1] / "benchmarks/english-exam-coach/schemas/content-item.schema.json"
+    try:
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        Draft202012Validator.check_schema(schema)
+        schema_validator = Draft202012Validator(schema, format_checker=FormatChecker())
+    except (OSError, json.JSONDecodeError, Exception) as exc:
+        return [f"content item schema could not be loaded/validated: {exc}"]
+
     seen: set[str] = set()
     for index, item in enumerate(pack["items"]):
         prefix = f"items[{index}]"
         if not isinstance(item, dict):
             errors.append(f"{prefix} must be an object")
             continue
+        for schema_error in schema_validator.iter_errors(item):
+            location = ".".join(str(part) for part in schema_error.absolute_path)
+            errors.append(f"{prefix}{("." + location) if location else ""}: {schema_error.message}")
         for field in ("schema_version", "item_id", "exam_adapter", "skill", "task_type",
                       "difficulty", "prompt", "provenance", "review"):
             if field not in item:
