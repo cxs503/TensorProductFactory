@@ -33,6 +33,18 @@ class EnglishBenchmarkValidationTests(unittest.TestCase):
         del self.pack["items"][0]["answer_key"]
         self.assertTrue(any("answer_key" in e for e in validate_pack(self.pack)))
 
+    def test_multiple_choice_answer_must_match_an_option_id(self):
+        self.pack["items"][0]["answer_key"]["expected"] = "Z"
+        self.assertTrue(any("must match a prompt option id" in e for e in validate_pack(self.pack)))
+
+    def test_true_false_not_given_uses_supported_answer(self):
+        self.pack["items"][1]["answer_key"]["expected"] = "MAYBE"
+        self.assertTrue(any("must be TRUE, FALSE, or NOT GIVEN" in e for e in validate_pack(self.pack)))
+
+    def test_short_answer_requires_accepted_phrase_list(self):
+        self.pack["items"][2]["answer_key"]["expected"] = "long-term support"
+        self.assertTrue(any("non-empty list of accepted answer phrases" in e for e in validate_pack(self.pack)))
+
     def test_draft_content_is_blocked_from_release(self):
         errors = validate_pack(self.pack, require_release=True)
         self.assertTrue(any("is not approved" in e for e in errors))
