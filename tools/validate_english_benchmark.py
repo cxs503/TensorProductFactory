@@ -34,7 +34,7 @@ def validate_pack(pack: dict, require_release: bool = False) -> list[str]:
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
         Draft202012Validator.check_schema(schema)
         schema_validator = Draft202012Validator(schema, format_checker=FormatChecker())
-    except (OSError, json.JSONDecodeError, Exception) as exc:
+    except Exception as exc:
         return [f"content item schema could not be loaded/validated: {exc}"]
 
     seen: set[str] = set()
@@ -45,7 +45,8 @@ def validate_pack(pack: dict, require_release: bool = False) -> list[str]:
             continue
         for schema_error in schema_validator.iter_errors(item):
             location = ".".join(str(part) for part in schema_error.absolute_path)
-            errors.append(f"{prefix}{("." + location) if location else ""}: {schema_error.message}")
+            location_prefix = "." + location if location else ""
+            errors.append(f"{prefix}{location_prefix}: {schema_error.message}")
         for field in ("schema_version", "item_id", "exam_adapter", "skill", "task_type",
                       "difficulty", "prompt", "provenance", "review"):
             if field not in item:
