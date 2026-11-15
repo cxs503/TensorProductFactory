@@ -65,6 +65,28 @@ def validate_pack(pack: dict, require_release: bool = False) -> list[str]:
         if item.get("difficulty") not in DIFFICULTIES:
             errors.append(f"{prefix}.difficulty is invalid")
 
+        task_type = item.get("task_type")
+        if item.get("skill") == "reading":
+            if task_type not in {"multiple_choice_single", "true_false_not_given", "short_answer"}:
+                errors.append(f"{prefix}.task_type is unsupported for reading")
+            prompt_value = item.get("prompt")
+            answer_value = item.get("answer_key")
+            if isinstance(prompt_value, dict) and isinstance(answer_value, dict):
+                expected = answer_value.get("expected")
+                if task_type == "multiple_choice_single":
+                    options = prompt_value.get("options")
+                    option_ids = {option.get("id") for option in options if isinstance(option, dict)} if isinstance(options, list) else set()
+                    if len(option_ids) < 2:
+                        errors.append(f"{prefix}.prompt.options requires at least two unique option ids")
+                    if not isinstance(expected, str) or expected not in option_ids:
+                        errors.append(f"{prefix}.answer_key.expected must match a prompt option id")
+                elif task_type == "true_false_not_given" and expected not in {"TRUE", "FALSE", "NOT GIVEN"}:
+                    errors.append(f"{prefix}.answer_key.expected must be TRUE, FALSE, or NOT GIVEN")
+                elif task_type == "short_answer" and (
+                    not isinstance(expected, list) or not expected or not all(isinstance(value, str) and value.strip() for value in expected)
+                ):
+                    errors.append(f"{prefix}.answer_key.expected must be a non-empty list of accepted answer phrases")
+
         prompt = item.get("prompt")
         if not isinstance(prompt, dict) or not prompt.get("instruction") or not prompt.get("stimulus"):
             errors.append(f"{prefix}.prompt requires non-empty instruction and stimulus")
